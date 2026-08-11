@@ -85,7 +85,6 @@
             margin-top: 2rem;
         }
 
-        /* 复制成功提示 */
         .toast {
             display: none;
             position: fixed;
@@ -129,37 +128,40 @@
         </div>
 
         <div class="links">
-            <a href="https://github.com/NG-222">GitHub</a>
+            <a href="#" id="githubLink">📋 复制 GitHub</a>
             <a href="#" id="emailLink">📋 复制邮箱</a>
         </div>
 
         <div class="footer">N-LAN · 2026</div>
     </div>
 
-    <!-- 复制成功提示 -->
-    <div class="toast" id="toast">✅ 邮箱已复制到剪贴板</div>
+    <div class="toast" id="toast">✅ 已复制到剪贴板</div>
 
     <script>
-        document.getElementById('emailLink').addEventListener('click', function(e) {
-            e.preventDefault(); // 阻止默认跳转
-
-            const email = 'IT-2307@outlook.com'; 
-
-            // 方法1：使用 Clipboard API（推荐）
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(email).then(() => {
-                    showToast();
-                }).catch(() => {
-                    // 如果 Clipboard API 失败，用备用方法
-                    fallbackCopy(email);
-                });
-            } else {
-                // 浏览器不支持 Clipboard API，用备用方法
-                fallbackCopy(email);
-            }
+        // GitHub 复制
+        document.getElementById('githubLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            copyText('https://github.com/NG-222');
         });
 
-        // 备用复制方法（兼容旧浏览器）
+        // Email 复制
+        document.getElementById('emailLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            copyText('IT-2307@outlook.com');
+        });
+
+        function copyText(text) {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(() => {
+                    showToast();
+                }).catch(() => {
+                    fallbackCopy(text);
+                });
+            } else {
+                fallbackCopy(text);
+            }
+        }
+
         function fallbackCopy(text) {
             const input = document.createElement('input');
             input.value = text;
@@ -170,11 +172,9 @@
             showToast();
         }
 
-        // 显示提示
         function showToast() {
             const toast = document.getElementById('toast');
             toast.classList.remove('show');
-            // 强制重排以重播动画
             void toast.offsetWidth;
             toast.classList.add('show');
             setTimeout(() => {
